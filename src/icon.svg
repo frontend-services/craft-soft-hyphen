@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circle background -->
+  <circle cx="50" cy="50" r="48" fill="url(#bg)"/>
+
+  <!-- Soft hyphen dash -->
+  <rect x="28" y="44" width="30" height="12" rx="3" fill="#fff"/>
+
+  <!-- Fade/ghost extension (the "soft" part) -->
+  <rect x="62" y="44" width="14" height="12" rx="3" fill="#fff" opacity="0.35"/>
+</svg>

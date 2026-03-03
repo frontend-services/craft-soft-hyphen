@@ -1,0 +1,16 @@
+/**
+ * Soft Hyphen — CKEditor editor styles
+ *
+ * Makes the soft hyphen placeholder visible while editing.
+ * Only targets .ck-content so the frontend is unaffected.
+ */
+
+.ck-content .shy {
+    background-color: #dbeafe;
+    border: 1px dashed #3b82f6;
+    border-radius: 2px;
+    padding: 0 2px;
+    font-size: 0.7em;
+    vertical-align: middle;
+    cursor: default;
+}
