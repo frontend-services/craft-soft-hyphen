@@ -57,12 +57,6 @@
           });
         },
       });
-
-      // Keyboard shortcut
-      editor.keystrokes.set('Ctrl+Shift+-', (data, cancel) => {
-        editor.execute('insertSoftHyphen');
-        cancel();
-      });
     }
   }
 

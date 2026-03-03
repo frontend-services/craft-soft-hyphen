@@ -15,7 +15,7 @@ composer require frontend-services/craft-soft-hyphen
 php craft plugin/install soft-hyphen
 ```
 
-That's it. The plugin works immediately — the keyboard shortcut **Ctrl+Shift+−** is available in every CKEditor field.
+That's it. The plugin works immediately.
 
 ## Adding the toolbar button
 
@@ -32,14 +32,3 @@ The plugin automatically injects itself into every CKEditor instance. No config 
 In the editor, soft hyphens are shown as a visible dashed marker so editors can see and manage them. The saved HTML contains `<span class="shy">­</span>` — the `­` inside is a real soft hyphen character that the browser handles natively.
 
 No frontend JavaScript or template changes needed.
-
-| Layer | What happens |
-|-------|-------------|
-| Editor | Visible dashed marker so editors can spot them |
-| Database | `<span class="shy">­</span>` |
-| HTML Purifier | Plugin whitelists the span automatically |
-| Frontend | Browser uses the `­` character natively |
-
-## Keyboard shortcut
-
-**Ctrl+Shift+−** inserts a soft hyphen at the cursor position.

@@ -7,9 +7,9 @@
 
 .ck-content .shy {
     background-color: #dbeafe;
-    border: 1px dashed #3b82f6;
+    border: 1px solid #8ab4f3;
     border-radius: 2px;
-    padding: 0 2px;
+    padding: 0 1px;
     font-size: 0.7em;
     vertical-align: middle;
     cursor: default;
