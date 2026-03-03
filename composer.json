@@ -2,14 +2,14 @@
   "name": "frontend-services/craft-soft-hyphen",
   "description": "Adds a soft hyphen (­) button to CKEditor in Craft CMS",
   "type": "craft-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "proprietary",
   "support": {
     "email": "mato@frontend.services",
-    "issues": "https://github.com/frontend-services/craft-mailcraft/issues?state=open",
-    "source": "https://github.com/frontend-services/craft-mailcraft",
-    "docs": "https://github.com/frontend-services/craft-mailcraft",
-    "rss": "https://github.com/frontend-services/craft-mailcraft/releases.atom"
+    "issues": "https://github.com/frontend-services/craft-soft-hyphen/issues?state=open",
+    "source": "https://github.com/frontend-services/craft-soft-hyphen",
+    "docs": "https://github.com/frontend-services/craft-soft-hyphen",
+    "rss": "https://github.com/frontend-services/craft-soft-hyphen/releases.atom"
   },
   "require": {
     "php": "^8.0",

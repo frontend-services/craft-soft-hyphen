@@ -5,7 +5,7 @@
  * Only targets .ck-content so the frontend is unaffected.
  */
 
-.ck-content .shy {
+.ck-content .fs-shy {
     background-color: #dbeafe;
     border: 1px solid #8ab4f3;
     border-radius: 2px;

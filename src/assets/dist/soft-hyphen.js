@@ -24,7 +24,7 @@
       editor.conversion.for('editingDowncast').elementToElement({
         model: 'softHyphen',
         view: (modelElement, { writer }) => {
-          return writer.createRawElement('span', { class: 'shy' }, function(domElement) {
+          return writer.createRawElement('span', { class: 'fs-shy' }, function(domElement) {
             domElement.textContent = '\u002D';
           });
         },
@@ -34,16 +34,13 @@
       editor.conversion.for('dataDowncast').elementToElement({
         model: 'softHyphen',
         view: (modelElement, { writer }) => {
-          const span = writer.createContainerElement('span', { class: 'shy' });
-          const text = writer.createText('\u00AD');
-          writer.insert(writer.createPositionAt(span, 0), text);
-          return span;
+          return writer.createContainerElement('span', { class: 'fs-shy' });
         },
       });
 
       // Upcast — loading saved content
       editor.conversion.for('upcast').elementToElement({
-        view: { name: 'span', classes: 'shy' },
+        view: { name: 'span', classes: 'fs-shy' },
         model: 'softHyphen',
       });
 

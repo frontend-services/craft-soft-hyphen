@@ -2,11 +2,13 @@
 
 namespace frontendservices\softhyphen;
 
+use Craft;
 use craft\base\Plugin as BasePlugin;
 use craft\ckeditor\Field;
 use craft\ckeditor\Plugin as CkeditorPlugin;
 use craft\htmlfield\events\ModifyPurifierConfigEvent;
 use yii\base\Event;
+use yii\web\Response;
 
 class Plugin extends BasePlugin
 {
@@ -34,13 +36,26 @@ class Plugin extends BasePlugin
             function (ModifyPurifierConfigEvent $event) {
                 $def = $event->config->getHTMLDefinition(true);
                 if ($def) {
-                    $def->addAttribute('span', 'class', 'Enum#shy');
+                    $def->addAttribute('span', 'class', 'Enum#fs-shy');
                 }
             }
         );
 
         CkeditorPlugin::registerCkeditorPackage(
             assets\SoftHyphenAsset::class
+        );
+
+        // Replace <span class="fs-shy"> with ­ on frontend templates
+        Event::on(
+            \craft\web\View::class,
+            \craft\web\View::EVENT_AFTER_RENDER_PAGE_TEMPLATE,
+            function (\craft\events\TemplateEvent $event) {
+                $event->output = preg_replace(
+                    '/<span class="fs-shy">[^<]*<\/span>/',
+                    "\u{00AD}",
+                    $event->output
+                );
+            }
         );
     }
 }
