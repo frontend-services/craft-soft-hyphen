@@ -1,0 +1,10 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.lightswitchField({
+    label: "Show soft-hyphen & non-breaking space buttons"|t('soft-hyphen'),
+    instructions: "Adds `&amp;shy;` and `&amp;nbsp;` insert buttons next to this field in the control panel."|t('soft-hyphen'),
+    id: 'softHyphenButtons',
+    name: 'softHyphenButtons',
+    on: field.softHyphenButtons ?? false,
+}) }}
+

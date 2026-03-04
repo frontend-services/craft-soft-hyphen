@@ -1,0 +1,69 @@
+/**
+ * Soft Hyphen — Plain Text field button styles
+ */
+
+.fs-plain-shy-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.fs-plain-shy-wrap input[type="text"],
+.fs-plain-shy-wrap textarea {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.fs-plain-shy-buttons {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 3px;
+}
+
+.fs-plain-insert-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(var(--input-height) / 2 - 1px);
+    width: 1.5em;
+    padding: 0;
+    border: var(--input-border);
+    border-radius: var(--input-border-radius);
+    background: var(--input-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.1s, border-color 0.1s, color 0.1s;
+}
+
+.fs-plain-insert-btn svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.fs-plain-insert-btn:hover {
+    background: #f3f7fc;
+    border-color: #3d85c8;
+    color: #1a5ea8;
+}
+
+.fs-plain-insert-btn:active {
+    background: #e2ecf9;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .fs-plain-insert-btn {
+        background: #2d3748;
+        border-color: rgba(255,255,255,0.15);
+        color: #a0aec0;
+    }
+    .fs-plain-insert-btn:hover {
+        background: #3a4a5e;
+        border-color: #63b3ed;
+        color: #90cdf4;
+    }
+}
+
