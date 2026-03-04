@@ -1,0 +1,10 @@
+{% import '_includes/forms.twig' as forms %}
+
+{{ forms.lightswitchField({
+    label: 'Title field buttons'|t('soft-hyphen'),
+    instructions: 'Show soft-hyphen and non-breaking-space insert buttons next to the title field on all entries.'|t('soft-hyphen'),
+    id: 'titleFieldButtons',
+    name: 'titleFieldButtons',
+    on: settings.titleFieldButtons,
+}) }}
+

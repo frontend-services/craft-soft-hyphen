@@ -3,6 +3,7 @@
 namespace frontendservices\softhyphen;
 
 use Craft;
+use craft\base\Element;
 use craft\base\Field as BaseField;
 use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
@@ -18,7 +19,9 @@ use craft\htmlfield\events\ModifyPurifierConfigEvent;
 use craft\web\View;
 use frontendservices\softhyphen\assets\PlainTextSoftHyphenAsset;
 use frontendservices\softhyphen\behaviors\PlainTextSoftHyphenBehavior;
+use frontendservices\softhyphen\models\Settings;
 use yii\base\Event;
+use yii\base\ModelEvent;
 
 class Plugin extends BasePlugin
 {
@@ -36,9 +39,99 @@ class Plugin extends BasePlugin
         ];
     }
 
+    public bool $hasCpSettings = true;
+
+    protected function createSettingsModel(): ?Model
+    {
+        return new Settings();
+    }
+
+    protected function settingsHtml(): ?string
+    {
+        return Craft::$app->getView()->renderTemplate(
+            'soft-hyphen/settings.twig',
+            ['settings' => $this->getSettings()],
+            View::TEMPLATE_MODE_CP
+        );
+    }
+
     public function init(): void
     {
         parent::init();
+
+        // ── Title field integration ───────────────────────────────────────────
+
+        // 6. Wrap the title input HTML with the button bar when the setting is on.
+        Event::on(
+            View::class,
+            View::EVENT_AFTER_RENDER_TEMPLATE,
+            function (TemplateEvent $event) {
+                if ($event->template !== '_includes/forms/text.twig' && $event->template !== '_includes/forms/text') {
+                    return;
+                }
+
+                /** @var Settings $settings */
+                $settings = $this->getSettings();
+                if (!$settings->titleFieldButtons) {
+                    return;
+                }
+
+                // Only target the title input — TitleField passes name="title"
+                // (from $this->name ?? $this->attribute(), which is 'title').
+                // The 'title' variable is the HTML tooltip attr (null), so check 'name'.
+                if (($event->variables['name'] ?? null) !== 'title') {
+                    return;
+                }
+
+                $view = Craft::$app->getView();
+                $view->registerAssetBundle(PlainTextSoftHyphenAsset::class);
+
+                $inputId = $view->namespaceInputId('title');
+
+                // Replace invisible chars with visible proxies for display
+                $inputHtml = str_replace(
+                    ["\u{00AD}", "\u{00A0}"],
+                    ["\u{00B7}", "\u{2423}"],
+                    $event->output
+                );
+
+                $event->output =
+                    '<div class="fs-plain-shy-wrap" data-input-id="' . $inputId . '">' .
+                    $inputHtml .
+                    '<div class="fs-plain-shy-buttons"></div>' .
+                    '</div>';
+            }
+        );
+
+        // 7. Before the element is saved, decode proxy chars in the title.
+        Event::on(
+            Element::class,
+            Element::EVENT_BEFORE_SAVE,
+            function (ModelEvent $event) {
+                /** @var Settings $settings */
+                $settings = $this->getSettings();
+                if (!$settings->titleFieldButtons) {
+                    return;
+                }
+
+                /** @var Element $element */
+                $element = $event->sender;
+
+                if (!isset($element->title) || !is_string($element->title)) {
+                    return;
+                }
+
+                $decoded = str_replace(
+                    ["\u{00B7}", "\u{2423}"],
+                    ["\u{00AD}", "\u{00A0}"],
+                    $element->title
+                );
+
+                if ($decoded !== $element->title) {
+                    $element->title = $decoded;
+                }
+            }
+        );
 
         // Allow <span class="fs-shy"> and <span class="fs-nbsp"> through the purifier
         Event::on(
