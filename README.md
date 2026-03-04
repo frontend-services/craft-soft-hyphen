@@ -1,8 +1,10 @@
 # Soft Hyphen for Craft CMS
 
-Adds a soft hyphen (`&shy;`) button to CKEditor in Craft CMS.
+Adds **soft hyphen** (`&shy;`) and **non-breaking space** (`&nbsp;`) buttons to CKEditor in Craft CMS.
 
-Soft hyphens are invisible characters that hint the browser where it can break a word across lines. When the break happens, a hyphen is shown. Useful for long words in narrow columns or responsive layouts.
+- **Soft hyphens** are invisible characters that hint the browser where it can break a word across lines. When the break happens, a hyphen is shown. Useful for long words in narrow columns or responsive layouts.
+- **Non-breaking spaces** prevent line breaks between two words. Useful for keeping units together (e.g. "100 km") or after short prepositions.
+
 
 ## Requirements
 
@@ -22,13 +24,13 @@ That's it. The plugin works immediately.
 To give editors a clickable button:
 
 1. Go to **Settings → CKEditor** and open your config
-2. Drag **Soft Hyphen** into your toolbar
+2. Drag **Soft Hyphen** and/or **Non-Breaking Space** into your toolbar
 3. Save
 
 ## How it works
 
 The plugin automatically injects itself into every CKEditor instance. No config pasting required.
 
-In the editor, soft hyphens are shown as a visible dashed marker so editors can see and manage them. The saved HTML contains `<span class="shy">­</span>` — the `­` inside is a real soft hyphen character that the browser handles natively.
+In the editor, both characters are shown as visible markers so editors can see and manage them. On the frontend, the markers are automatically replaced with real `&shy;` and `&nbsp;` characters.
 
 No frontend JavaScript or template changes needed.

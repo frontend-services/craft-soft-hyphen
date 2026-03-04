@@ -18,9 +18,11 @@ class SoftHyphenAsset extends BaseCkeditorPackageAsset
 
     public array $pluginNames = [
         'SoftHyphen',
+        'NonBreakingSpace',
     ];
 
     public array $toolbarItems = [
         'softHyphen',
+        'nonBreakingSpace',
     ];
 }

@@ -8,7 +8,6 @@ use craft\ckeditor\Field;
 use craft\ckeditor\Plugin as CkeditorPlugin;
 use craft\htmlfield\events\ModifyPurifierConfigEvent;
 use yii\base\Event;
-use yii\web\Response;
 
 class Plugin extends BasePlugin
 {
@@ -30,22 +29,24 @@ class Plugin extends BasePlugin
     {
         parent::init();
 
+        // Allow <span class="fs-shy"> and <span class="fs-nbsp"> through the purifier
         Event::on(
             Field::class,
             Field::EVENT_MODIFY_PURIFIER_CONFIG,
             function (ModifyPurifierConfigEvent $event) {
                 $def = $event->config->getHTMLDefinition(true);
                 if ($def) {
-                    $def->addAttribute('span', 'class', 'Enum#fs-shy');
+                    $def->addAttribute('span', 'class', 'Enum#fs-shy,fs-nbsp');
                 }
             }
         );
 
+        // Register CKEditor package
         CkeditorPlugin::registerCkeditorPackage(
             assets\SoftHyphenAsset::class
         );
 
-        // Replace <span class="fs-shy"> with ­ on frontend templates
+        // Replace spans with actual characters on frontend templates
         Event::on(
             \craft\web\View::class,
             \craft\web\View::EVENT_AFTER_RENDER_PAGE_TEMPLATE,
@@ -53,6 +54,11 @@ class Plugin extends BasePlugin
                 $event->output = preg_replace(
                     '/<span class="fs-shy">[^<]*<\/span>/',
                     "\u{00AD}",
+                    $event->output
+                );
+                $event->output = preg_replace(
+                    '/<span class="fs-nbsp">[^<]*<\/span>/',
+                    "\u{00A0}",
                     $event->output
                 );
             }

@@ -1,8 +1,8 @@
 {
   "name": "frontend-services/craft-soft-hyphen",
-  "description": "Adds a soft hyphen (­) button to CKEditor in Craft CMS",
+  "description": "Adds a soft hyphen (&amp;shy;) and non breaking space (&amp;nbsp;) button to CKEditor in Craft CMS",
   "type": "craft-plugin",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "proprietary",
   "support": {
     "email": "mato@frontend.services",

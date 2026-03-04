@@ -14,3 +14,13 @@
     vertical-align: middle;
     cursor: default;
 }
+
+.ck-content .fs-nbsp {
+    background-color: #fef3c7;
+    border: 1px solid #dd9849;
+    border-radius: 2px;
+    padding: 0 1px;
+    font-size: 0.7em;
+    vertical-align: middle;
+    cursor: default;
+}
