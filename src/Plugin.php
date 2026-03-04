@@ -66,7 +66,12 @@ class Plugin extends BasePlugin
             View::class,
             View::EVENT_AFTER_RENDER_TEMPLATE,
             function (TemplateEvent $event) {
-                if ($event->template !== '_includes/forms/text.twig' && $event->template !== '_includes/forms/text') {
+                if (
+                    $event->template !== '_includes/forms/text.twig' &&
+                    $event->template !== '_includes/forms/text' &&
+                    $event->template !== '_includes/forms/textarea.twig' &&
+                    $event->template !== '_includes/forms/textarea'
+                ) {
                     return;
                 }
 
