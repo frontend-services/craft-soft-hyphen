@@ -178,32 +178,31 @@ class Plugin extends BasePlugin
 
         // ── CKEditor field integration ────────────────────────────────────────
         if (assets\SoftHyphenAsset::isCkeditorV5()) {
-            // v5: ES module loaded via import map.
-            // registerCkeditorPackage() adds the asset to the list that CKEditor's
-            // EVENT_AFTER_REGISTER_ASSET_BUNDLE handler will register as an asset bundle.
-            // We also hook that same event ourselves to add the import map entry, because
-            // CKEditor's init() import-map loop runs before our plugin's init().
+            // registerCkeditorPackage() wires up the asset so CKEditor's
+            // EVENT_AFTER_REGISTER_ASSET_BUNDLE handler will:
+            //  1. call registerAssetBundle(SoftHyphenAsset::class) → publishes CSS
+            //  2. call $bundle->registerPackage() → calls CkeditorConfig::registerPackage()
+            //     with the pluginNames/toolbarItems declared on the asset (exactly once).
+            // The import map entry is added separately in the event handler below.
             CkeditorPlugin::registerCkeditorPackage(
                 assets\SoftHyphenAsset::class,
                 'soft-hyphen-v5.js'
             );
 
+            $importRegistered = false;
             Event::on(
                 View::class,
                 View::EVENT_AFTER_REGISTER_ASSET_BUNDLE,
-                function (AssetBundleEvent $event) {
-                    if (!($event->bundle instanceof CkeditorAsset)) {
+                function (AssetBundleEvent $event) use (&$importRegistered) {
+                    if ($importRegistered || !($event->bundle instanceof CkeditorAsset)) {
                         return;
                     }
+                    $importRegistered = true;
+
                     /** @var View $view */
                     $view = $event->sender;
-                    $assetManager = $view->getAssetManager();
-
-                    // Publish the source directory and get its base URL.
-                    // We resolve the file URL manually to avoid re-triggering
-                    // EVENT_AFTER_REGISTER_ASSET_BUNDLE via registerAssetBundle().
                     $sourcePath = __DIR__ . '/assets/dist';
-                    $baseUrl = $assetManager->getPublishedUrl($sourcePath, true);
+                    $baseUrl = $view->getAssetManager()->getPublishedUrl($sourcePath, true);
 
                     if ($baseUrl !== false) {
                         $view->registerJsImport(
