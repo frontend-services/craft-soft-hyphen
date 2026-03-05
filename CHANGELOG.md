@@ -1,11 +1,17 @@
 # Soft Hyphen Changelog
 
+## 1.1.3.2 — 2026-03-05
+
+### Fixed
+- Fixed dynamic addition of CKEditor field in matrix
+
 ## 1.1.3.1 — 2026-03-05
 
 ### Fixed
 - Fixed "Identifier 'SoftHyphen' has already been declared" console error when multiple CKEditor fields are present on the same page.
 
 ## 1.1.3 — 2026-03-05
+
 ### Fixed
 - Compatibility with CKEditor V5 plugin
 

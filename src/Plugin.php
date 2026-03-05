@@ -189,18 +189,16 @@ class Plugin extends BasePlugin
                 'soft-hyphen-v5.js'
             );
 
-            $importRegistered = false;
             Event::on(
                 View::class,
-                View::EVENT_AFTER_REGISTER_ASSET_BUNDLE,
-                function (AssetBundleEvent $event) use (&$importRegistered) {
-                    if ($importRegistered || !($event->bundle instanceof CkeditorAsset)) {
+                View::EVENT_BEGIN_PAGE,
+                function () {
+                    $view = Craft::$app->getView();
+
+                    if ($view->getTemplateMode() !== View::TEMPLATE_MODE_CP) {
                         return;
                     }
-                    $importRegistered = true;
 
-                    /** @var View $view */
-                    $view = $event->sender;
                     $sourcePath = __DIR__ . '/assets/dist';
                     $baseUrl = $view->getAssetManager()->getPublishedUrl($sourcePath, true);
 
