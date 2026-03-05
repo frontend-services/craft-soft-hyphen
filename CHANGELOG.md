@@ -1,6 +1,6 @@
 # Soft Hyphen Changelog
 
-## 1.1.2 — 2026-03-05
+## 1.1.3 — 2026-03-05
 ### Fixed
 - Compatibility with CKEditor V5 plugin
 
