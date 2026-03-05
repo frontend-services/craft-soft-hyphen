@@ -1,6 +1,10 @@
 # Soft Hyphen Changelog
 
 ## 1.1.2 — 2026-03-05
+### Fixed
+- Compatibility with CKEditor V5 plugin
+
+## 1.1.2 — 2026-03-05
 
 ### Fixed
 - Uninstalling the plugin no longer breaks the site. A `beforeUninstall` hook now removes the `softHyphenButtons` setting from all Plain Text field records in the database before the plugin is removed, so Craft can load those fields normally afterwards.
