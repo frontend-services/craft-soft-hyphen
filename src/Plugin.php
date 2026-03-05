@@ -9,12 +9,14 @@ use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use craft\ckeditor\Field;
 use craft\ckeditor\Plugin as CkeditorPlugin;
+use craft\db\Table;
 use craft\events\DefineFieldHtmlEvent;
 use craft\events\DefineBehaviorsEvent;
 use craft\events\DefineValueEvent;
 use craft\events\FieldElementEvent;
 use craft\events\TemplateEvent;
 use craft\fields\PlainText;
+use craft\helpers\Json;
 use craft\htmlfield\events\ModifyPurifierConfigEvent;
 use craft\web\View;
 use frontendservices\softhyphen\assets\PlainTextSoftHyphenAsset;
@@ -53,6 +55,28 @@ class Plugin extends BasePlugin
             ['settings' => $this->getSettings()],
             View::TEMPLATE_MODE_CP
         );
+    }
+
+    protected function beforeUninstall(): void
+    {
+        // Remove the softHyphenButtons setting from all PlainText field settings
+        // in the database so Craft can still load those fields after the plugin
+        // is uninstalled (otherwise an UnknownPropertyException is thrown).
+        $fields = (new \craft\db\Query())
+            ->select(['id', 'settings'])
+            ->from(Table::FIELDS)
+            ->where(['type' => PlainText::class])
+            ->all();
+
+        foreach ($fields as $field) {
+            $settings = Json::decodeIfJson($field['settings'] ?? '{}');
+            if (is_array($settings) && array_key_exists('softHyphenButtons', $settings)) {
+                unset($settings['softHyphenButtons']);
+                Craft::$app->getDb()->createCommand()
+                    ->update(Table::FIELDS, ['settings' => Json::encode($settings)], ['id' => $field['id']])
+                    ->execute();
+            }
+        }
     }
 
     public function init(): void
