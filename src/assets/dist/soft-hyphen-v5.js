@@ -44,10 +44,9 @@ function makeEditingPlugin(pluginName, modelName, spanClass, proxyLabel) {
     init() {
       const editor = this.editor;
 
+      // $inlineObject already implies isInline, isObject, allowWhere: '$text'
       editor.model.schema.register(modelName, {
-        allowWhere: '$text',
-        isInline: true,
-        isObject: true,
+        inheritAllFrom: '$inlineObject',
       });
 
       // Editing view: visible badge the editor sees
@@ -55,7 +54,6 @@ function makeEditingPlugin(pluginName, modelName, spanClass, proxyLabel) {
         model: modelName,
         view: (modelElement, { writer }) => {
           const span = writer.createContainerElement('span', { class: spanClass });
-          // Insert the proxy text node so the badge has visible content
           writer.insert(
             writer.createPositionAt(span, 0),
             writer.createText(proxyLabel),
@@ -64,7 +62,7 @@ function makeEditingPlugin(pluginName, modelName, spanClass, proxyLabel) {
         },
       });
 
-      // Data view: what gets saved to the DB — bare span, stripped by PHP on frontend
+      // Data view: bare span — PHP regex strips it to the real Unicode char on the frontend
       editor.conversion.for('dataDowncast').elementToElement({
         model: modelName,
         view: (modelElement, { writer }) =>
@@ -73,7 +71,10 @@ function makeEditingPlugin(pluginName, modelName, spanClass, proxyLabel) {
 
       // Upcast: read the saved span back from the DB
       editor.conversion.for('upcast').elementToElement({
-        view: { name: 'span', classes: spanClass },
+        view: {
+          name: 'span',
+          classes: [ spanClass ],
+        },
         model: modelName,
       });
 

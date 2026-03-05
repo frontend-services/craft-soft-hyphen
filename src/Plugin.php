@@ -9,7 +9,6 @@ use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use craft\ckeditor\Field;
 use craft\ckeditor\Plugin as CkeditorPlugin;
-use craft\ckeditor\web\assets\BaseCkeditorPackageAsset;
 use craft\ckeditor\web\assets\ckeditor\CkeditorAsset;
 use craft\db\Table;
 use craft\events\AssetBundleEvent;
@@ -199,11 +198,17 @@ class Plugin extends BasePlugin
                     /** @var View $view */
                     $view = $event->sender;
                     $assetManager = $view->getAssetManager();
-                    $bundle = $assetManager->getBundle(assets\SoftHyphenAsset::class);
-                    if ($bundle instanceof BaseCkeditorPackageAsset) {
+
+                    // Publish the source directory and get its base URL.
+                    // We resolve the file URL manually to avoid re-triggering
+                    // EVENT_AFTER_REGISTER_ASSET_BUNDLE via registerAssetBundle().
+                    $sourcePath = __DIR__ . '/assets/dist';
+                    $baseUrl = $assetManager->getPublishedUrl($sourcePath, true);
+
+                    if ($baseUrl !== false) {
                         $view->registerJsImport(
-                            $bundle->namespace,
-                            $assetManager->getAssetUrl($bundle, 'soft-hyphen-v5.js', false)
+                            '@frontend-services/ckeditor5-soft-hyphen',
+                            $baseUrl . '/soft-hyphen-v5.js'
                         );
                     }
                 }
