@@ -9,7 +9,10 @@ use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use craft\ckeditor\Field;
 use craft\ckeditor\Plugin as CkeditorPlugin;
+use craft\ckeditor\web\assets\BaseCkeditorPackageAsset;
+use craft\ckeditor\web\assets\ckeditor\CkeditorAsset;
 use craft\db\Table;
+use craft\events\AssetBundleEvent;
 use craft\events\DefineFieldHtmlEvent;
 use craft\events\DefineBehaviorsEvent;
 use craft\events\DefineValueEvent;
@@ -174,10 +177,52 @@ class Plugin extends BasePlugin
             }
         );
 
-        // Register CKEditor package
-        CkeditorPlugin::registerCkeditorPackage(
-            assets\SoftHyphenAsset::class
-        );
+        // ── CKEditor field integration ────────────────────────────────────────
+        if (assets\SoftHyphenAsset::isCkeditorV5()) {
+            // v5: ES module loaded via import map.
+            // registerCkeditorPackage() adds the asset to the list that CKEditor's
+            // EVENT_AFTER_REGISTER_ASSET_BUNDLE handler will register as an asset bundle.
+            // We also hook that same event ourselves to add the import map entry, because
+            // CKEditor's init() import-map loop runs before our plugin's init().
+            CkeditorPlugin::registerCkeditorPackage(
+                assets\SoftHyphenAsset::class,
+                'soft-hyphen-v5.js'
+            );
+
+            Event::on(
+                View::class,
+                View::EVENT_AFTER_REGISTER_ASSET_BUNDLE,
+                function (AssetBundleEvent $event) {
+                    if (!($event->bundle instanceof CkeditorAsset)) {
+                        return;
+                    }
+                    /** @var View $view */
+                    $view = $event->sender;
+                    $assetManager = $view->getAssetManager();
+                    $bundle = $assetManager->getBundle(assets\SoftHyphenAsset::class);
+                    if ($bundle instanceof BaseCkeditorPackageAsset) {
+                        $view->registerJsImport(
+                            $bundle->namespace,
+                            $assetManager->getAssetUrl($bundle, 'soft-hyphen-v5.js', false)
+                        );
+                    }
+                }
+            );
+        } else {
+            // v4: classic IIFE script — registers itself on window.CKEditor5.
+            // registerCkeditorPackage() doesn't exist on v4, so we just register
+            // the asset bundle directly when CkeditorAsset is loaded.
+            Event::on(
+                View::class,
+                View::EVENT_AFTER_REGISTER_ASSET_BUNDLE,
+                function (AssetBundleEvent $event) {
+                    if (!($event->bundle instanceof CkeditorAsset)) {
+                        return;
+                    }
+                    $event->sender->registerAssetBundle(assets\SoftHyphenAsset::class);
+                }
+            );
+        }
 
         // Replace spans with actual characters on frontend templates
         Event::on(

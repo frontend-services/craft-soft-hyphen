@@ -1,26 +1,47 @@
 /**
  * Soft Hyphen — CKEditor editor styles
  *
- * Makes the soft hyphen placeholder visible while editing.
+ * Makes the soft-hyphen and NBSP placeholders visible while editing.
  * Only targets .ck-content so the frontend is unaffected.
  */
+
+.ck-content .fs-shy,
+.ck-content .fs-nbsp {
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0 2px;
+    font-size: 0.72em;
+    line-height: 1;
+    vertical-align: baseline;
+    cursor: default;
+    user-select: none;
+    /* widget outline handled by CKEditor, but remove the default blue ring */
+    outline: none !important;
+}
 
 .ck-content .fs-shy {
     background-color: #dbeafe;
     border: 1px solid #8ab4f3;
-    border-radius: 2px;
-    padding: 0 1px;
-    font-size: 0.7em;
-    vertical-align: middle;
-    cursor: default;
+    color: #1e40af;
 }
 
 .ck-content .fs-nbsp {
     background-color: #fef3c7;
     border: 1px solid #dd9849;
-    border-radius: 2px;
-    padding: 0 1px;
-    font-size: 0.7em;
-    vertical-align: middle;
-    cursor: default;
+    color: #92400e;
+}
+
+/* Hover state */
+.ck-content .fs-shy:hover {
+    background-color: #bfdbfe;
+}
+
+.ck-content .fs-nbsp:hover {
+    background-color: #fde68a;
+}
+
+/* Selected state (CKEditor adds .ck-widget_selected) */
+.ck-content .fs-shy.ck-widget_selected,
+.ck-content .fs-nbsp.ck-widget_selected {
+    outline: 2px solid #6b9fe4 !important;
 }
