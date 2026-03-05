@@ -8,6 +8,8 @@ class SoftHyphenAsset extends BaseCkeditorPackageAsset
 {
     public $sourcePath = __DIR__ . '/dist';
 
+    public string $namespace = '@frontend-services/ckeditor5-soft-hyphen';
+
     public $js = [
         'soft-hyphen.js',
     ];
