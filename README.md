@@ -66,3 +66,10 @@ Because `&shy;` and `&nbsp;` are invisible in plain `<input>` and `<textarea>` f
 | non-breaking space `\u00A0` | open box `␣` |
 
 These proxy characters are **only used for display** — they are never saved to the database. When an entry is saved, the plugin automatically converts them back to the real `&shy;` and `&nbsp;` characters server-side before the value is persisted.
+
+---
+
+## Uninstalling
+
+Uninstalling the plugin is safe. Before the plugin is removed it automatically cleans up its own field settings from the database, so Craft can load all Plain Text fields normally afterwards. No content is lost — any soft hyphens or non-breaking spaces already saved in your entries remain exactly as stored.
+
