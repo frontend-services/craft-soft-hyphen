@@ -87,7 +87,7 @@ class Plugin extends BasePlugin
 
         // ── Title field integration ───────────────────────────────────────────
 
-        // 6. Wrap the title input HTML with the button bar when the setting is on.
+        // 6. Mark the title input so the floating widget can attach to it.
         Event::on(
             View::class,
             View::EVENT_AFTER_RENDER_TEMPLATE,
@@ -117,8 +117,6 @@ class Plugin extends BasePlugin
                 $view = Craft::$app->getView();
                 $view->registerAssetBundle(PlainTextSoftHyphenAsset::class);
 
-                $inputId = $view->namespaceInputId('title');
-
                 // Replace invisible chars with visible proxies for display
                 $inputHtml = str_replace(
                     ["\u{00AD}", "\u{00A0}"],
@@ -126,11 +124,13 @@ class Plugin extends BasePlugin
                     $event->output
                 );
 
-                $event->output =
-                    '<div class="fs-plain-shy-wrap" data-input-id="' . $inputId . '">' .
-                    $inputHtml .
-                    '<div class="fs-plain-shy-buttons"></div>' .
-                    '</div>';
+                // Inject data attribute so the floating widget can attach
+                $event->output = preg_replace(
+                    '/(<(?:input|textarea)\b)/i',
+                    '$1 data-fs-shy-field',
+                    $inputHtml,
+                    1
+                );
             }
         );
 
@@ -364,7 +364,7 @@ class Plugin extends BasePlugin
             }
         );
 
-        // 5. Wrap the input HTML with the button bar when the setting is on.
+        // 5. Mark the input so the floating widget can attach to it.
         Event::on(
             PlainText::class,
             BaseField::EVENT_DEFINE_INPUT_HTML,
@@ -379,8 +379,6 @@ class Plugin extends BasePlugin
                 // Register the asset bundle once per request
                 Craft::$app->getView()->registerAssetBundle(PlainTextSoftHyphenAsset::class);
 
-                $inputId = Craft::$app->getView()->namespaceInputId($field->getInputId());
-
                 // Replace invisible chars with their visible proxies in the rendered HTML
                 // so the editor sees · and ␣ instead of blank-looking characters.
                 $inputHtml = str_replace(
@@ -389,11 +387,13 @@ class Plugin extends BasePlugin
                     $event->html
                 );
 
-                $event->html =
-                    '<div class="fs-plain-shy-wrap" data-input-id="' . $inputId . '">' .
-                    $inputHtml .
-                    '<div class="fs-plain-shy-buttons"></div>' .
-                    '</div>';
+                // Inject data attribute so the floating widget can attach
+                $event->html = preg_replace(
+                    '/(<(?:input|textarea)\b)/i',
+                    '$1 data-fs-shy-field',
+                    $inputHtml,
+                    1
+                );
             }
         );
     }

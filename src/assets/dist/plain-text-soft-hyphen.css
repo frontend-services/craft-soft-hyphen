@@ -1,24 +1,14 @@
 /**
- * Soft Hyphen — Plain Text field button styles
+ * Soft Hyphen — Plain Text field floating widget styles
  */
 
-.fs-plain-shy-wrap {
-    display: flex;
-    align-items: flex-start;
-    gap: 5px;
-}
-
-.fs-plain-shy-wrap input[type="text"],
-.fs-plain-shy-wrap textarea {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-
-.fs-plain-shy-buttons {
+.fs-shy-widget {
+    position: fixed;
     display: flex;
     flex-direction: column;
-    flex-shrink: 0;
     gap: 3px;
+    z-index: 10000;
+    pointer-events: auto;
 }
 
 .fs-plain-insert-btn {
@@ -66,4 +56,3 @@
         color: #90cdf4;
     }
 }
-

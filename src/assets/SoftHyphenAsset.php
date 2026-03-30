@@ -4,6 +4,7 @@ namespace frontendservices\softhyphen\assets;
 
 use Composer\InstalledVersions;
 use craft\ckeditor\web\assets\BaseCkeditorPackageAsset;
+use craft\web\View;
 
 class SoftHyphenAsset extends BaseCkeditorPackageAsset
 {
@@ -48,14 +49,18 @@ class SoftHyphenAsset extends BaseCkeditorPackageAsset
      * produce a broken import statement with duplicate identifiers:
      *   import { SoftHyphen, NonBreakingSpace, SoftHyphen, NonBreakingSpace } from "..."
      */
-    public function registerPackage(): void
+    public function registerPackage(?View $view = null): void
     {
         static $registered = false;
         if ($registered) {
             return;
         }
         $registered = true;
-        parent::registerPackage();
+        if (self::isCkeditorV5()) {
+            parent::registerPackage();
+        } else {
+            parent::registerPackage($view);
+        }
     }
 
     public function init(): void

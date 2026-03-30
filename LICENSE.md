@@ -1,3 +1,5 @@
+# The Craft License
+
 Copyright © frontend.services
 
 Permission is hereby granted to any person obtaining a copy of this software
