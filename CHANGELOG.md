@@ -1,5 +1,10 @@
 # Soft Hyphen Changelog
 
+## 1.1.4 — 2026-03-30
+
+- Make the buttons floating on the right side of the field
+- Improved compatibility with CKEditor 4
+
 ## 1.1.3.2 — 2026-03-05
 
 ### Fixed
