@@ -9,9 +9,7 @@ use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use craft\ckeditor\Field;
 use craft\ckeditor\Plugin as CkeditorPlugin;
-use craft\ckeditor\web\assets\ckeditor\CkeditorAsset;
 use craft\db\Table;
-use craft\events\AssetBundleEvent;
 use craft\events\DefineFieldHtmlEvent;
 use craft\events\DefineBehaviorsEvent;
 use craft\events\DefineValueEvent;
@@ -211,19 +209,12 @@ class Plugin extends BasePlugin
                 }
             );
         } else {
-            // v4: classic IIFE script — registers itself on window.CKEditor5.
-            // registerCkeditorPackage() doesn't exist on v4, so we just register
-            // the asset bundle directly when CkeditorAsset is loaded.
-            Event::on(
-                View::class,
-                View::EVENT_AFTER_REGISTER_ASSET_BUNDLE,
-                function (AssetBundleEvent $event) {
-                    if (!($event->bundle instanceof CkeditorAsset)) {
-                        return;
-                    }
-                    $event->sender->registerAssetBundle(assets\SoftHyphenAsset::class);
-                }
-            );
+            // v4: registerCkeditorPackage() takes only a class name.
+            // The ckeditor plugin's own EVENT_AFTER_REGISTER_ASSET_BUNDLE handler
+            // will call registerAssetBundle() + $bundle->registerPackage($view),
+            // which calls CKEditor5.craftcms.registerPackage() in JS — making the
+            // toolbar items visible in the toolbar builder.
+            CkeditorPlugin::registerCkeditorPackage(assets\SoftHyphenAsset::class);
         }
 
         // Replace spans with actual characters on frontend templates

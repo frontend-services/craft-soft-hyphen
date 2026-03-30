@@ -1,3 +1,7 @@
+/**
+ * Soft Hyphen & Non-Breaking Space — CKEditor plugin (CKEditor Craft plugin v4)
+ **/
+
 (function () {
   'use strict';
 

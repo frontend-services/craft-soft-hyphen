@@ -68,7 +68,7 @@
     const wRect = widget.getBoundingClientRect();
     const vW    = window.innerWidth;
     const vH    = window.innerHeight;
-    const GAP   = 8;
+    const GAP   = 3;
     const EDGE  = 4;
 
     // Prefer right side, fall back to left
@@ -144,4 +144,36 @@
   }, { passive: true });
 
   window.FsSoftHyphenPlainText = { init: initFields };
+
+  // ── Slug generator patch ──────────────────────────────────────────────────
+  // Craft.SlugGenerator reads the raw title input value (which contains our
+  // visible proxy chars) and slugifies it.  Strip the proxies before that
+  // logic runs so they never end up in the generated slug:
+  //   · (U+00B7) — soft-hyphen proxy  → remove entirely (not a word separator)
+  //   ␣ (U+2423) — NBSP proxy         → regular space   (becomes a slug separator)
+
+  function patchSlugGenerator() {
+    if (
+      typeof Craft === 'undefined' ||
+      !Craft.SlugGenerator ||
+      !Craft.SlugGenerator.prototype.generateTargetValue
+    ) {
+      return;
+    }
+
+    var orig = Craft.SlugGenerator.prototype.generateTargetValue;
+    Craft.SlugGenerator.prototype.generateTargetValue = function (val) {
+      val = val
+        .replace(/\u00B7/g, '')   // soft-hyphen proxy → remove
+        .replace(/\u2423/g, ' '); // NBSP proxy → regular space
+      return orig.call(this, val);
+    };
+  }
+
+  // Patch immediately if Craft is already loaded, otherwise wait for it
+  if (typeof Craft !== 'undefined' && Craft.SlugGenerator) {
+    patchSlugGenerator();
+  } else {
+    document.addEventListener('DOMContentLoaded', patchSlugGenerator);
+  }
 })();
