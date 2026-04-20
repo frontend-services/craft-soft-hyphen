@@ -24,6 +24,8 @@ use frontendservices\softhyphen\behaviors\PlainTextSoftHyphenBehavior;
 use frontendservices\softhyphen\models\Settings;
 use yii\base\Event;
 use yii\base\ModelEvent;
+use craft\services\Plugins;
+use craft\events\PluginEvent;
 
 class Plugin extends BasePlugin
 {
@@ -59,9 +61,11 @@ class Plugin extends BasePlugin
 
     protected function beforeUninstall(): void
     {
-        // Remove the softHyphenButtons setting from all PlainText field settings
-        // in the database so Craft can still load those fields after the plugin
-        // is uninstalled (otherwise an UnknownPropertyException is thrown).
+        $this->_cleanupPlainTextSettings();
+    }
+
+    private function _cleanupPlainTextSettings(): void
+    {
         $fields = (new \craft\db\Query())
             ->select(['id', 'settings'])
             ->from(Table::FIELDS)
@@ -385,6 +389,16 @@ class Plugin extends BasePlugin
                     $inputHtml,
                     1
                 );
+            }
+        );
+
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_BEFORE_DISABLE_PLUGIN,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    $this->_cleanupPlainTextSettings();
+                }
             }
         );
     }
